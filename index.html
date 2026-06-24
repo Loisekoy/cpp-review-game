@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2f5bea" />
+    <meta
+      name="description"
+      content="給國中生的 Scratch 與 C++ 互動總複習闖關遊戲"
+    />
+    <title>程式闖關島｜Scratch × C++ 總複習</title>
+    <link rel="icon" href="assets/sprite.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-kicker">Scratch × C++ 總複習</span>
+          <h1>程式闖關島</h1>
+        </div>
+
+        <div class="status-strip" aria-label="闖關狀態">
+          <div class="status-item">
+            <span class="status-label">關卡</span>
+            <strong id="levelCount">1 / 5</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">分數</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="status-item lives" aria-label="剩餘機會">
+            <span class="status-label">機會</span>
+            <strong id="livesValue">♥ ♥ ♥</strong>
+          </div>
+          <button class="reset-button" id="resetButton" type="button">重新開始</button>
+        </div>
+      </header>
+
+      <nav class="level-track" aria-label="關卡進度">
+        <ol id="levelTrack"></ol>
+      </nav>
+
+      <section class="game-layout" aria-live="polite">
+        <aside class="mission-panel">
+          <span class="mission-number" id="missionNumber">任務 01</span>
+          <h2 id="missionTitle">排好 Scratch 積木</h2>
+          <p id="missionPrompt"></p>
+          <div class="concept-tags" id="conceptTags"></div>
+
+          <div class="best-score">
+            <span>最高分</span>
+            <strong id="bestScore">0</strong>
+          </div>
+        </aside>
+
+        <section class="play-panel" id="playPanel"></section>
+      </section>
+
+      <footer class="feedback-bar" id="feedbackBar" data-tone="neutral">
+        <span class="feedback-mark" aria-hidden="true">●</span>
+        <p id="feedbackText">準備好了，從第一關開始！</p>
+      </footer>
+    </main>
+
+    <dialog class="result-dialog" id="resultDialog">
+      <div class="result-badge" id="resultBadge">A</div>
+      <p class="result-kicker">闖關完成</p>
+      <h2 id="resultTitle">程式探險家</h2>
+      <p class="result-score">總分 <strong id="finalScore">100</strong> / 100</p>
+      <p id="resultMessage"></p>
+      <div class="result-actions">
+        <button class="primary-button" id="playAgainButton" type="button">再玩一次</button>
+        <button class="secondary-button" id="reviewButton" type="button">查看答題回顧</button>
+      </div>
+      <ol class="review-list" id="reviewList" hidden></ol>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>

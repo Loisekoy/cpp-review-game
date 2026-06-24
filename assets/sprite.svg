@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">程式闖關角色</title>
+  <desc id="desc">橘色的 Scratch 風格程式角色</desc>
+  <path fill="#f35e47" stroke="#182128" stroke-width="5" stroke-linejoin="round" d="M23 40 17 14l24 15c6-3 12-5 19-5s13 2 19 5l24-15-6 27c8 9 13 20 13 33 0 25-22 42-50 42S10 99 10 74c0-13 5-25 13-34Z"/>
+  <path fill="#fff" d="M29 58c0-9 7-16 16-16s16 7 16 16-7 16-16 16-16-7-16-16Zm31 0c0-9 7-16 16-16s16 7 16 16-7 16-16 16-16-7-16-16Z"/>
+  <circle cx="48" cy="60" r="5" fill="#182128"/>
+  <circle cx="73" cy="60" r="5" fill="#182128"/>
+  <path d="M52 83c5 6 11 8 17 0" fill="none" stroke="#182128" stroke-width="5" stroke-linecap="round"/>
+  <path d="m60 72-5 5h10Z" fill="#182128"/>
+</svg>
