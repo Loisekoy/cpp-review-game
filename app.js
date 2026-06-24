@@ -64,6 +64,91 @@ const missions = [
     review: "Scratch 的條件積木可以對照 C++ 的 if (條件) { 指令 }。",
   },
   {
+    type: "quiz",
+    title: "把資料放進變數盒子",
+    prompt: "要建立整數變數 score，並把 80 放進去，哪一行正確？",
+    tags: ["C++", "變數", "int"],
+    visual: {
+      kind: "code",
+      text: "建立整數 score\n把數字 80 放進去",
+    },
+    answers: [
+      "score int = 80;",
+      "int = score 80;",
+      "int score = 80;",
+      "cin score = 80;",
+    ],
+    correct: 2,
+    success: "放進去了！int 宣告整數，= 把右邊的值放進左邊。",
+    hint: "順序是資料型態、變數名稱、等號、數值。",
+    review: "整數變數可寫成 int score = 80;，= 代表指定值。",
+  },
+  {
+    type: "quiz",
+    title: "分清楚 = 和 ==",
+    prompt: "if 要檢查 score 是否等於 100，條件應該怎麼寫？",
+    tags: ["C++", "if", "比較"],
+    visual: {
+      kind: "code",
+      text: "if ( ______ ) {\n    cout << \"滿分\";\n}",
+    },
+    answers: ["score = 100", "score == 100", "score >= 100", "score != 100"],
+    correct: 1,
+    success: "比較成功！== 用來檢查兩邊是否相等。",
+    hint: "一個等號是放入資料，兩個等號才是比較。",
+    review: "= 是指定值，== 是比較是否相等。",
+  },
+  {
+    type: "quiz",
+    title: "找出偶數密碼",
+    prompt: "哪一個條件可以判斷 number 是偶數？",
+    tags: ["C++", "運算", "奇偶數"],
+    visual: {
+      kind: "code",
+      text: "if ( ______ ) {\n    cout << \"偶數\";\n}",
+    },
+    answers: [
+      "number / 2 == 0",
+      "number + 2 == 0",
+      "number % 2 == 0",
+      "number % 2 == 1",
+    ],
+    correct: 2,
+    success: "密碼正確！偶數除以 2 的餘數是 0。",
+    hint: "% 會取得除法的餘數；偶數除以 2 不會剩下東西。",
+    review: "number % 2 == 0 可以判斷偶數，% 代表取餘數。",
+  },
+  {
+    type: "quiz",
+    title: "追蹤 for 迴圈輸出",
+    prompt: "這段程式依序會印出什麼？",
+    tags: ["C++", "for", "追蹤"],
+    visual: {
+      kind: "code",
+      text: "for (int i = 1; i <= 3; i++) {\n    cout << i;\n}",
+    },
+    answers: ["123", "0123", "321", "一直印 1"],
+    correct: 0,
+    success: "追蹤完成！i 從 1 開始，每圈 +1，印到 3。",
+    hint: "依序寫下每一圈的 i：1、2、3，接著 i 變成 4 才停止。",
+    review: "for 迴圈要看初始值、條件和更新；這題依序輸出 123。",
+  },
+  {
+    type: "quiz",
+    title: "救回無限迴圈",
+    prompt: "這段 while 一直停不下來，應該補上哪一行？",
+    tags: ["C++", "while", "除錯"],
+    visual: {
+      kind: "code",
+      text: "int i = 1;\nwhile (i <= 5) {\n    cout << i;\n    ______\n}",
+    },
+    answers: ["i = 1;", "i++;", "cout << i;", "i <= 5;"],
+    correct: 1,
+    success: "迴圈獲救！i++ 會讓條件最後變成不成立。",
+    hint: "每一圈都要改變 i，否則 i 永遠是 1。",
+    review: "while 迴圈裡要更新控制變數，例如 i++，才有機會停止。",
+  },
+  {
     type: "final",
     title: "修好 while 終極題",
     prompt: "讓程式正確輸出 1、2、3、4、5。選出條件與更新指令。",
@@ -71,6 +156,8 @@ const missions = [
     review: "while 要先設定初始值、檢查條件，並在每一圈更新 i，才能正確停止。",
   },
 ];
+
+const POINTS_PER_MISSION = 100 / missions.length;
 
 const sequenceBlocks = [
   { id: "flag", text: "當綠旗被點擊", className: "block-event" },
@@ -273,7 +360,7 @@ function checkSequence() {
   const sprite = document.querySelector(".sprite");
   sprite.classList.add("run");
   state.answers.push({ mission: missions[0].title, correct: true, answer: "綠旗 → 移動 → 說完成" });
-  state.score += 20;
+  state.score += POINTS_PER_MISSION;
   setFeedback("角色成功到達星星！Scratch 會由上往下執行積木。", "success");
   setTimeout(nextMission, 1000);
 }
@@ -333,7 +420,7 @@ function checkQuiz(mission) {
     correct: true,
     answer: mission.answers[state.selectedAnswer],
   });
-  state.score += 20;
+  state.score += POINTS_PER_MISSION;
   setFeedback(mission.success, "success");
   setTimeout(nextMission, 850);
 }
@@ -382,8 +469,8 @@ function checkFinal() {
     return;
   }
 
-  state.answers.push({ mission: missions[4].title, correct: true, answer: "i <= 5 / i++" });
-  state.score += 20;
+  state.answers.push({ mission: missions[state.missionIndex].title, correct: true, answer: "i <= 5 / i++" });
+  state.score += POINTS_PER_MISSION;
   setFeedback("終極題破解成功！while 會正確輸出 1 到 5 並停止。", "success");
   setTimeout(showResults, 900);
 }
