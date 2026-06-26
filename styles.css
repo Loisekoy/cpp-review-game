@@ -64,6 +64,25 @@ button {
   letter-spacing: 0;
 }
 
+.mini-game-nav {
+  margin-top: 12px;
+  min-height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--blue);
+  background: var(--paper);
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mini-game-nav:hover {
+  background: #edf2ff;
+}
+
 .brand-kicker {
   color: var(--muted);
   font-size: 15px;
