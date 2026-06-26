@@ -1,159 +1,111 @@
-const rounds = [
+const GRID_SIZE = 18;
+const INITIAL_SNAKE = [
+  { x: 8, y: 9 },
+  { x: 7, y: 9 },
+  { x: 6, y: 9 },
+];
+
+const tokens = [
   {
-    concept: "Scratch",
-    title: "綠旗出發",
-    prompt: "角色要開始執行程式，第一塊積木應該放哪一個？",
-    kind: "scratch",
-    visual: "？\n移動 10 步\n說「完成」",
-    answers: [
-      { text: "當綠旗被點擊", correct: true, explain: "事件積木會啟動下面的程式。" },
-      { text: "停止全部", correct: false, explain: "停止全部會讓程式結束，不會開始動作。" },
-      { text: "等待 1 秒", correct: false, explain: "等待可以延遲，但不能當作啟動事件。" },
-    ],
-    review: "Scratch 程式通常先由事件積木啟動，例如「當綠旗被點擊」。",
+    label: "int",
+    color: "#ffc33d",
+    tip: "int 可以存整數，例如分數、長度或次數。",
   },
   {
-    concept: "Scratch",
-    title: "重複幾次",
-    prompt: "每次移動 10 步，要總共移動 40 步，重複次數要填多少？",
-    kind: "scratch",
-    visual: "重複（？）次\n　移動 10 步",
-    answers: [
-      { text: "2 次", correct: false, explain: "2 次只會走 20 步。" },
-      { text: "4 次", correct: true, explain: "4 × 10 = 40。" },
-      { text: "10 次", correct: false, explain: "10 次會走到 100 步，太多了。" },
-    ],
-    review: "重複次數可以用總距離除以每次移動距離來判斷。",
+    label: "if",
+    color: "#59ced0",
+    tip: "if 會檢查條件，成立才執行裡面的程式。",
   },
   {
-    concept: "C++",
-    title: "印出文字",
-    prompt: "要在 C++ 畫面上印出 Hello，哪一行最正確？",
-    kind: "code",
-    visual: "____",
-    answers: [
-      { text: 'cout << "Hello";', correct: true, explain: "cout 搭配 << 可以把內容輸出到畫面。" },
-      { text: 'cin >> "Hello";', correct: false, explain: "cin 是讀入資料，不是印出文字。" },
-      { text: 'cout >> "Hello";', correct: false, explain: "cout 的資料方向是 <<。" },
-    ],
-    review: "C++ 輸出使用 cout <<，字串要放在雙引號裡。",
+    label: "for",
+    color: "#8f59ce",
+    tip: "for 適合重複固定次數的動作。",
   },
   {
-    concept: "C++",
-    title: "讀入分數",
-    prompt: "已經有 int score;，要讓使用者輸入 score，哪一行正確？",
-    kind: "code",
-    visual: "int score;\n____",
-    answers: [
-      { text: "cin << score;", correct: false, explain: "cin 的資料方向要使用 >>。" },
-      { text: "cin >> score;", correct: true, explain: "資料會從輸入流進 score 變數。" },
-      { text: "cout >> score;", correct: false, explain: "cout 是輸出，不是讀入。" },
-    ],
-    review: "C++ 讀入使用 cin >> 變數名稱。",
+    label: "while",
+    color: "#3faa72",
+    tip: "while 會在條件成立時持續重複。",
   },
   {
-    concept: "C++",
-    title: "變數盒子",
-    prompt: "要建立整數變數 level，並把 2 放進去，哪一行正確？",
-    kind: "code",
-    visual: "建立整數 level\n放入數字 2",
-    answers: [
-      { text: "level int = 2;", correct: false, explain: "資料型態要放在變數名稱前面。" },
-      { text: "int level = 2;", correct: true, explain: "int 宣告整數，= 把 2 放進 level。" },
-      { text: "int = level 2;", correct: false, explain: "宣告順序不完整。" },
-    ],
-    review: "宣告整數變數可寫成 int level = 2;。",
+    label: "cout",
+    color: "#f35e47",
+    tip: "cout << 可以把結果印到畫面上。",
   },
   {
-    concept: "C++",
-    title: "及格判斷",
-    prompt: "如果 score 大於等於 60 就印出 Pass，條件要怎麼寫？",
-    kind: "code",
-    visual: "if ( <span class=\"blank\">____</span> ) {\n    cout << \"Pass\";\n}",
-    answers: [
-      { text: "score >= 60", correct: true, explain: ">= 表示大於或等於，符合及格判斷。" },
-      { text: "score = 60", correct: false, explain: "一個等號是指定值，不是比較。" },
-      { text: "score < 60", correct: false, explain: "這是在檢查不及格。" },
-    ],
-    review: "if 的括號裡放條件，>= 可表示大於或等於。",
+    label: "cin",
+    color: "#2f5bea",
+    tip: "cin >> 可以把輸入讀進變數。",
   },
   {
-    concept: "C++",
-    title: "for 迴圈追蹤",
-    prompt: "這段程式會印出什麼？",
-    kind: "code",
-    visual: "for (int i = 1; i <= 3; i++) {\n    cout << i;\n}",
-    answers: [
-      { text: "123", correct: true, explain: "i 依序是 1、2、3，接著變成 4 後停止。" },
-      { text: "0123", correct: false, explain: "i 的初始值是 1，不是 0。" },
-      { text: "一直印 1", correct: false, explain: "i++ 會讓 i 每圈增加。" },
-    ],
-    review: "for 迴圈要看初始值、條件、更新三個地方。",
+    label: "==",
+    color: "#ffc33d",
+    tip: "== 用來比較兩邊是否相等。",
   },
   {
-    concept: "C++",
-    title: "while 不迷路",
-    prompt: "要讓 while 從 1 印到 5 後停止，空格應該補哪一組？",
-    kind: "code",
-    visual: "int i = 1;\nwhile ( <span class=\"blank\">____</span> ) {\n    cout << i;\n    <span class=\"blank\">____</span>;\n}",
-    answers: [
-      { text: "i <= 5 / i++", correct: true, explain: "條件包含 5，每圈 i++ 才能慢慢停止。" },
-      { text: "i = 5 / i++", correct: false, explain: "一個等號不是比較條件。" },
-      { text: "i <= 5 / i = 1", correct: false, explain: "i 一直回到 1，會停不下來。" },
-    ],
-    review: "while 需要正確條件，也要在迴圈中更新控制變數。",
+    label: "%",
+    color: "#59ced0",
+    tip: "% 可以取得除法後的餘數。",
   },
 ];
 
-const pointsPerRound = 100 / rounds.length;
-
-const state = {
-  index: 0,
-  score: 0,
-  streak: 0,
-  completed: 0,
-  hadMistake: false,
-  review: [],
+const directionMap = {
+  ArrowUp: { x: 0, y: -1 },
+  KeyW: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  KeyS: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  KeyA: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
+  KeyD: { x: 1, y: 0 },
 };
 
 const elements = {
-  roundCounter: document.querySelector("#roundCounter"),
+  canvas: document.querySelector("#gameCanvas"),
   scoreValue: document.querySelector("#scoreValue"),
-  streakValue: document.querySelector("#streakValue"),
+  lengthValue: document.querySelector("#lengthValue"),
+  speedValue: document.querySelector("#speedValue"),
   bestValue: document.querySelector("#bestValue"),
-  energyMeter: document.querySelector("#energyMeter"),
-  checkpoints: document.querySelector("#checkpoints"),
-  runner: document.querySelector("#runner"),
-  feedback: document.querySelector("#feedback"),
-  feedbackText: document.querySelector("#feedbackText"),
-  conceptLabel: document.querySelector("#conceptLabel"),
-  challengeTitle: document.querySelector("#challengeTitle"),
-  challengePrompt: document.querySelector("#challengePrompt"),
-  promptWindow: document.querySelector("#promptWindow"),
-  answers: document.querySelector("#answers"),
-  nextButton: document.querySelector("#nextButton"),
-  resetButton: document.querySelector("#resetButton"),
+  startButton: document.querySelector("#startButton"),
+  pauseButton: document.querySelector("#pauseButton"),
+  restartButton: document.querySelector("#restartButton"),
+  overlay: document.querySelector("#gameOverlay"),
+  overlayTitle: document.querySelector("#overlayTitle"),
+  overlayText: document.querySelector("#overlayText"),
+  currentToken: document.querySelector("#currentToken"),
+  currentTip: document.querySelector("#currentTip"),
+  tokenLog: document.querySelector("#tokenLog"),
   resultDialog: document.querySelector("#resultDialog"),
   resultBadge: document.querySelector("#resultBadge"),
-  resultTitle: document.querySelector("#resultTitle"),
   finalScore: document.querySelector("#finalScore"),
+  resultTitle: document.querySelector("#resultTitle"),
   resultMessage: document.querySelector("#resultMessage"),
-  reviewList: document.querySelector("#reviewList"),
   playAgainButton: document.querySelector("#playAgainButton"),
 };
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+const ctx = elements.canvas.getContext("2d");
+
+const state = {
+  snake: [],
+  direction: { x: 1, y: 0 },
+  nextDirection: { x: 1, y: 0 },
+  food: null,
+  score: 0,
+  eaten: 0,
+  speedLevel: 1,
+  running: false,
+  paused: false,
+  gameOver: false,
+  started: false,
+  lastStepAt: 0,
+  animationId: null,
+  log: [],
+  nextTokenIndex: 0,
+  touchStart: null,
+};
 
 function loadBestScore() {
   try {
-    return Number(localStorage.getItem("energyRelayBest") || 0);
+    return Number(localStorage.getItem("codeSnakeBest") || 0);
   } catch {
     return 0;
   }
@@ -161,178 +113,395 @@ function loadBestScore() {
 
 function saveBestScore(score) {
   try {
-    localStorage.setItem("energyRelayBest", String(score));
+    localStorage.setItem("codeSnakeBest", String(score));
   } catch {
-    // Local storage can fail in private windows; the game still works.
+    // The game is still playable when storage is unavailable.
   }
 }
 
-function setFeedback(message, tone = "neutral") {
-  elements.feedbackText.textContent = message;
-  elements.feedback.dataset.tone = tone;
-}
-
-function buildStaticPieces() {
-  elements.energyMeter.innerHTML = rounds
-    .map((_, index) => `<span class="energy-dot" data-energy="${index}"></span>`)
-    .join("");
-
-  elements.checkpoints.innerHTML = rounds
-    .map((_, index) => `<li data-step="${index}">${index + 1}</li>`)
-    .join("");
-}
-
-function renderStatus() {
-  const shownIndex = Math.min(state.index + 1, rounds.length);
-  const score = Math.min(100, Math.round(state.score));
-
-  elements.roundCounter.textContent = `${shownIndex} / ${rounds.length}`;
-  elements.scoreValue.textContent = score;
-  elements.streakValue.textContent = state.streak;
-  elements.bestValue.textContent = Math.max(loadBestScore(), score);
-
-  elements.energyMeter.querySelectorAll(".energy-dot").forEach((dot, index) => {
-    dot.classList.toggle("filled", index < state.completed);
-  });
-
-  elements.checkpoints.querySelectorAll("li").forEach((item, index) => {
-    item.classList.toggle("done", index < state.completed);
-    item.classList.toggle("active", index === state.index);
-  });
-
-  const progressPercent = rounds.length <= 1 ? 0 : (state.completed / rounds.length) * 100;
-  elements.runner.style.setProperty("--runner-left", `${progressPercent}%`);
-}
-
-function renderPrompt(round) {
-  const content = round.visual.replaceAll("\n", "<br>");
-  if (round.kind === "scratch") {
-    elements.promptWindow.innerHTML = `<div class="scratch-card">${content}</div>`;
-    return;
-  }
-
-  elements.promptWindow.innerHTML = `<div class="code-card">${content}</div>`;
-}
-
-function renderRound() {
-  const round = rounds[state.index];
-  state.hadMistake = false;
-  elements.nextButton.hidden = true;
-
-  elements.conceptLabel.textContent = round.concept;
-  elements.challengeTitle.textContent = round.title;
-  elements.challengePrompt.textContent = round.prompt;
-  renderPrompt(round);
-
-  elements.answers.innerHTML = round.answers
-    .map(
-      (answer, index) => `
-        <button class="answer-button" data-answer="${index}" type="button">
-          ${round.concept === "C++" ? `<code>${escapeHtml(answer.text)}</code>` : escapeHtml(answer.text)}
-        </button>`,
-    )
-    .join("");
-
-  elements.answers.querySelectorAll("[data-answer]").forEach((button) => {
-    button.addEventListener("click", () => chooseAnswer(Number(button.dataset.answer), button));
-  });
-
-  setFeedback("選一個正確指令，幫角色充能前進。", "neutral");
-  renderStatus();
-}
-
-function chooseAnswer(answerIndex, button) {
-  const round = rounds[state.index];
-  const answer = round.answers[answerIndex];
-
-  if (!answer.correct) {
-    state.hadMistake = true;
-    state.streak = 0;
-    button.classList.add("wrong");
-    button.disabled = true;
-    setFeedback(answer.explain, "error");
-    renderStatus();
-    return;
-  }
-
-  const points = state.hadMistake ? pointsPerRound * 0.64 : pointsPerRound;
-  state.score += points;
-  state.streak += 1;
-  state.completed += 1;
-  state.review.push({
-    title: round.title,
-    text: round.review,
-    firstTry: !state.hadMistake,
-  });
-
-  elements.answers.querySelectorAll("button").forEach((item) => {
-    item.disabled = true;
-  });
-  button.classList.add("correct");
-  elements.runner.classList.add("pop");
-  setTimeout(() => elements.runner.classList.remove("pop"), 240);
-
-  setFeedback(answer.explain, "success");
-  elements.nextButton.textContent = state.index === rounds.length - 1 ? "看結果" : "下一題";
-  elements.nextButton.hidden = false;
-  renderStatus();
-}
-
-function goNext() {
-  if (state.index >= rounds.length - 1) {
-    showResults();
-    return;
-  }
-
-  state.index += 1;
-  renderRound();
-}
-
-function showResults() {
-  const finalScore = Math.min(100, Math.round(state.score));
-  saveBestScore(Math.max(loadBestScore(), finalScore));
-  elements.finalScore.textContent = finalScore;
-
-  if (finalScore >= 90) {
-    elements.resultBadge.textContent = "S";
-    elements.resultTitle.textContent = "程式能量隊長";
-    elements.resultMessage.textContent = "Scratch 和 C++ 的轉換觀念很穩，可以挑戰當小老師。";
-  } else if (finalScore >= 70) {
-    elements.resultBadge.textContent = "A";
-    elements.resultTitle.textContent = "穩定接力員";
-    elements.resultMessage.textContent = "大方向都抓到了，回頭看錯題就會更熟。";
-  } else {
-    elements.resultBadge.textContent = "B";
-    elements.resultTitle.textContent = "勇敢練習員";
-    elements.resultMessage.textContent = "先把輸入輸出、if、迴圈三個核心補起來，再玩一次。";
-  }
-
-  elements.reviewList.innerHTML = rounds
-    .map((round) => {
-      const result = state.review.find((item) => item.title === round.title);
-      const mark = result?.firstTry ? "一次答對" : result ? "修正後答對" : "未完成";
-      return `<li><strong>${escapeHtml(round.title)}：</strong>${escapeHtml(mark)}，${escapeHtml(round.review)}</li>`;
-    })
-    .join("");
-
-  renderStatus();
-  elements.resultDialog.showModal();
+function copyInitialSnake() {
+  return INITIAL_SNAKE.map((segment) => ({ ...segment }));
 }
 
 function resetGame() {
-  state.index = 0;
+  state.snake = copyInitialSnake();
+  state.direction = { x: 1, y: 0 };
+  state.nextDirection = { x: 1, y: 0 };
   state.score = 0;
-  state.streak = 0;
-  state.completed = 0;
-  state.hadMistake = false;
-  state.review = [];
+  state.eaten = 0;
+  state.speedLevel = 1;
+  state.running = false;
+  state.paused = false;
+  state.gameOver = false;
+  state.started = false;
+  state.lastStepAt = 0;
+  state.log = [];
+  state.nextTokenIndex = 0;
+  state.food = createFood({ x: 12, y: 9 });
   if (elements.resultDialog.open) elements.resultDialog.close();
-  renderRound();
+  setOverlay("準備開始", "按開始進入遊戲");
+  updateStatus();
+  render();
 }
 
-elements.nextButton.addEventListener("click", goNext);
-elements.resetButton.addEventListener("click", resetGame);
-elements.playAgainButton.addEventListener("click", resetGame);
+function createFood(position) {
+  const token = tokens[state.nextTokenIndex % tokens.length];
+  state.nextTokenIndex += 1;
+  return {
+    ...position,
+    token,
+  };
+}
 
-buildStaticPieces();
-renderRound();
+function spawnFood() {
+  const occupied = new Set(state.snake.map((segment) => `${segment.x},${segment.y}`));
+  const emptyCells = [];
+
+  for (let y = 0; y < GRID_SIZE; y += 1) {
+    for (let x = 0; x < GRID_SIZE; x += 1) {
+      if (!occupied.has(`${x},${y}`)) emptyCells.push({ x, y });
+    }
+  }
+
+  const next = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  state.food = createFood(next);
+}
+
+function setOverlay(title, text) {
+  elements.overlay.hidden = false;
+  elements.overlayTitle.textContent = title;
+  elements.overlayText.textContent = text;
+}
+
+function hideOverlay() {
+  elements.overlay.hidden = true;
+}
+
+function tickDuration() {
+  return Math.max(78, 168 - (state.speedLevel - 1) * 12);
+}
+
+function updateStatus() {
+  elements.scoreValue.textContent = state.score;
+  elements.lengthValue.textContent = state.snake.length;
+  elements.speedValue.textContent = state.speedLevel;
+  elements.bestValue.textContent = Math.max(loadBestScore(), state.score);
+
+  elements.currentToken.textContent = state.food.token.label;
+  elements.currentToken.style.background = state.food.token.color;
+  elements.currentToken.style.color = state.food.token.label === "cin" ? "white" : "#182128";
+  elements.currentTip.textContent = state.food.token.tip;
+
+  elements.pauseButton.disabled = !state.started || state.gameOver;
+  elements.startButton.disabled = state.running && !state.paused;
+  if (state.running && !state.paused) {
+    elements.startButton.textContent = "進行中";
+  } else {
+    elements.startButton.textContent = state.started ? "繼續" : "開始";
+  }
+
+  elements.tokenLog.innerHTML = state.log.length
+    ? state.log
+        .slice(0, 6)
+        .map(
+          (item) =>
+            `<li><strong>${item.label}</strong> +${item.points}，${item.tip}</li>`,
+        )
+        .join("")
+    : "<li>還沒有吃到語法能量</li>";
+}
+
+function startGame() {
+  if (state.gameOver) resetGame();
+  state.running = true;
+  state.paused = false;
+  state.started = true;
+  state.lastStepAt = 0;
+  hideOverlay();
+  updateStatus();
+  requestLoop();
+  elements.canvas.focus();
+}
+
+function pauseGame() {
+  if (!state.started || state.gameOver) return;
+
+  state.paused = !state.paused;
+  state.running = !state.paused;
+  if (state.paused) {
+    setOverlay("暫停中", "按繼續回到遊戲");
+  } else {
+    hideOverlay();
+    state.lastStepAt = 0;
+    requestLoop();
+  }
+  updateStatus();
+}
+
+function requestLoop() {
+  if (state.animationId) cancelAnimationFrame(state.animationId);
+  state.animationId = requestAnimationFrame(gameLoop);
+}
+
+function gameLoop(timestamp) {
+  render();
+  if (!state.running || state.paused || state.gameOver) return;
+
+  if (!state.lastStepAt) state.lastStepAt = timestamp;
+  if (timestamp - state.lastStepAt >= tickDuration()) {
+    stepGame();
+    state.lastStepAt = timestamp;
+  }
+
+  state.animationId = requestAnimationFrame(gameLoop);
+}
+
+function stepGame() {
+  state.direction = state.nextDirection;
+  const head = state.snake[0];
+  const nextHead = {
+    x: head.x + state.direction.x,
+    y: head.y + state.direction.y,
+  };
+
+  if (isWallCollision(nextHead) || isSelfCollision(nextHead)) {
+    endGame();
+    return;
+  }
+
+  state.snake.unshift(nextHead);
+
+  if (nextHead.x === state.food.x && nextHead.y === state.food.y) {
+    eatFood();
+  } else {
+    state.snake.pop();
+  }
+
+  updateStatus();
+}
+
+function isWallCollision(position) {
+  return position.x < 0 || position.x >= GRID_SIZE || position.y < 0 || position.y >= GRID_SIZE;
+}
+
+function isSelfCollision(position) {
+  return state.snake.some((segment) => segment.x === position.x && segment.y === position.y);
+}
+
+function eatFood() {
+  const points = 10 + Math.max(0, state.speedLevel - 1) * 2;
+  const token = state.food.token;
+  state.score += points;
+  state.eaten += 1;
+  state.speedLevel = 1 + Math.floor(state.eaten / 4);
+  state.log.unshift({ ...token, points });
+  spawnFood();
+}
+
+function endGame() {
+  state.running = false;
+  state.gameOver = true;
+  saveBestScore(Math.max(loadBestScore(), state.score));
+  render();
+  updateStatus();
+  showResults();
+}
+
+function showResults() {
+  elements.resultBadge.textContent = state.score;
+  elements.finalScore.textContent = state.score;
+
+  if (state.score >= 100) {
+    elements.resultTitle.textContent = "程式蛇高手";
+    elements.resultMessage.textContent = `吃到 ${state.eaten} 個語法能量，控制節奏很穩。`;
+  } else if (state.score >= 50) {
+    elements.resultTitle.textContent = "穩定前進";
+    elements.resultMessage.textContent = `吃到 ${state.eaten} 個語法能量，可以再挑戰更長。`;
+  } else {
+    elements.resultTitle.textContent = "再跑一次";
+    elements.resultMessage.textContent = "先熟悉轉彎節奏，再去吃更遠的語法能量。";
+  }
+
+  elements.resultDialog.showModal();
+}
+
+function setDirection(next) {
+  const isReverse =
+    next.x + state.direction.x === 0 && next.y + state.direction.y === 0;
+  if (isReverse) return;
+  state.nextDirection = next;
+  if (!state.started || state.paused) startGame();
+}
+
+function resizeCanvasForDisplay() {
+  const rect = elements.canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const width = Math.round(rect.width * dpr);
+  const height = Math.round(rect.height * dpr);
+  if (elements.canvas.width !== width || elements.canvas.height !== height) {
+    elements.canvas.width = width;
+    elements.canvas.height = height;
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return {
+    width: rect.width,
+    height: rect.height,
+    cell: rect.width / GRID_SIZE,
+  };
+}
+
+function render() {
+  const board = resizeCanvasForDisplay();
+  drawBoard(board);
+  drawFood(board);
+  drawSnake(board);
+}
+
+function drawBoard(board) {
+  ctx.clearRect(0, 0, board.width, board.height);
+  ctx.fillStyle = "#eaf8ff";
+  ctx.fillRect(0, 0, board.width, board.height);
+  ctx.strokeStyle = "#cdebf5";
+  ctx.lineWidth = 1;
+
+  for (let i = 1; i < GRID_SIZE; i += 1) {
+    const offset = i * board.cell;
+    ctx.beginPath();
+    ctx.moveTo(offset, 0);
+    ctx.lineTo(offset, board.height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, offset);
+    ctx.lineTo(board.width, offset);
+    ctx.stroke();
+  }
+}
+
+function drawFood(board) {
+  const { x, y, token } = state.food;
+  const pad = board.cell * 0.13;
+  const foodX = x * board.cell + pad;
+  const foodY = y * board.cell + pad;
+  const size = board.cell - pad * 2;
+
+  drawRoundedRect(foodX, foodY, size, size, Math.max(5, board.cell * 0.18), token.color);
+  ctx.strokeStyle = "#182128";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = token.label === "cin" ? "white" : "#182128";
+  ctx.font = `900 ${Math.max(11, board.cell * 0.28)}px Consolas, monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(token.label, foodX + size / 2, foodY + size / 2 + 1, size - 4);
+}
+
+function drawSnake(board) {
+  state.snake.forEach((segment, index) => {
+    const pad = board.cell * 0.1;
+    const x = segment.x * board.cell + pad;
+    const y = segment.y * board.cell + pad;
+    const size = board.cell - pad * 2;
+    const color = index === 0 ? "#2f5bea" : index % 2 ? "#3faa72" : "#59ced0";
+    drawRoundedRect(x, y, size, size, Math.max(6, board.cell * 0.22), color);
+    ctx.strokeStyle = "#182128";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    if (index === 0) drawEyes(x, y, size);
+  });
+}
+
+function drawEyes(x, y, size) {
+  const eyeRadius = Math.max(2, size * 0.08);
+  const centerX = x + size / 2;
+  const centerY = y + size / 2;
+  const side = size * 0.2;
+  const front = size * 0.18;
+  const horizontal = state.direction.x !== 0;
+
+  const eyes = horizontal
+    ? [
+        { x: centerX + state.direction.x * front, y: centerY - side },
+        { x: centerX + state.direction.x * front, y: centerY + side },
+      ]
+    : [
+        { x: centerX - side, y: centerY + state.direction.y * front },
+        { x: centerX + side, y: centerY + state.direction.y * front },
+      ];
+
+  ctx.fillStyle = "white";
+  eyes.forEach((eye) => {
+    ctx.beginPath();
+    ctx.arc(eye.x, eye.y, eyeRadius * 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle = "#182128";
+  eyes.forEach((eye) => {
+    ctx.beginPath();
+    ctx.arc(eye.x, eye.y, eyeRadius, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawRoundedRect(x, y, width, height, radius, fill) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+document.addEventListener("keydown", (event) => {
+  const next = directionMap[event.code];
+  if (!next) return;
+  event.preventDefault();
+  setDirection(next);
+});
+
+elements.canvas.addEventListener("touchstart", (event) => {
+  const touch = event.changedTouches[0];
+  state.touchStart = { x: touch.clientX, y: touch.clientY };
+});
+
+elements.canvas.addEventListener("touchend", (event) => {
+  if (!state.touchStart) return;
+  const touch = event.changedTouches[0];
+  const dx = touch.clientX - state.touchStart.x;
+  const dy = touch.clientY - state.touchStart.y;
+  state.touchStart = null;
+
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    setDirection({ x: dx > 0 ? 1 : -1, y: 0 });
+  } else {
+    setDirection({ x: 0, y: dy > 0 ? 1 : -1 });
+  }
+});
+
+document.querySelectorAll("[data-direction]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const direction = button.dataset.direction;
+    if (direction === "up") setDirection({ x: 0, y: -1 });
+    if (direction === "down") setDirection({ x: 0, y: 1 });
+    if (direction === "left") setDirection({ x: -1, y: 0 });
+    if (direction === "right") setDirection({ x: 1, y: 0 });
+  });
+});
+
+elements.startButton.addEventListener("click", startGame);
+elements.pauseButton.addEventListener("click", pauseGame);
+elements.restartButton.addEventListener("click", resetGame);
+elements.playAgainButton.addEventListener("click", resetGame);
+window.addEventListener("resize", render);
+
+resetGame();

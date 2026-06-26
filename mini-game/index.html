@@ -4,11 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2f5bea" />
-    <meta
-      name="description"
-      content="給國中生複習 Scratch 與 C++ 基礎語法的互動小遊戲"
-    />
-    <title>程式能量接力｜Scratch × C++ 小遊戲</title>
+    <meta name="description" content="給國中生玩的 Scratch 與 C++ 程式貪食蛇小遊戲" />
+    <title>程式貪食蛇｜Scratch × C++ 小遊戲</title>
     <link rel="icon" href="../assets/sprite.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -17,27 +14,27 @@
       <header class="topbar">
         <div class="brand-lockup">
           <span>Scratch × C++ 小遊戲</span>
-          <h1>程式能量接力</h1>
+          <h1>程式貪食蛇</h1>
         </div>
 
         <div class="top-actions">
           <a class="nav-button" href="../">回總複習</a>
-          <button class="ghost-button" id="resetButton" type="button">重新開始</button>
+          <button class="ghost-button" id="restartButton" type="button">重新開始</button>
         </div>
       </header>
 
       <section class="scoreboard" aria-label="遊戲狀態">
         <div>
-          <span>題目</span>
-          <strong id="roundCounter">1 / 8</strong>
-        </div>
-        <div>
           <span>分數</span>
           <strong id="scoreValue">0</strong>
         </div>
         <div>
-          <span>連答</span>
-          <strong id="streakValue">0</strong>
+          <span>長度</span>
+          <strong id="lengthValue">3</strong>
+        </div>
+        <div>
+          <span>速度</span>
+          <strong id="speedValue">1</strong>
         </div>
         <div>
           <span>最佳</span>
@@ -45,55 +42,72 @@
         </div>
       </section>
 
-      <section class="play-layout" aria-live="polite">
-        <section class="track-panel" aria-label="能量接力跑道">
-          <div class="track-header">
+      <section class="play-layout">
+        <section class="board-panel" aria-labelledby="boardTitle">
+          <div class="board-header">
             <div>
-              <span class="small-label">Energy Relay</span>
-              <h2>答對一題，角色前進一格</h2>
+              <span class="small-label">Code Snake</span>
+              <h2 id="boardTitle">吃語法能量，讓程式蛇變長</h2>
             </div>
-            <div class="energy-meter" id="energyMeter" aria-label="能量格"></div>
+            <div class="game-actions">
+              <button class="primary-button" id="startButton" type="button">開始</button>
+              <button class="ghost-button" id="pauseButton" type="button">暫停</button>
+            </div>
           </div>
 
-          <div class="track" id="track">
-            <ol class="checkpoints" id="checkpoints"></ol>
-            <img
-              class="runner"
-              id="runner"
-              src="../assets/sprite.svg"
-              alt="正在接力的程式角色"
-            />
+          <div class="canvas-wrap">
+            <canvas
+              id="gameCanvas"
+              width="540"
+              height="540"
+              tabindex="0"
+              aria-label="程式貪食蛇遊戲盤"
+            ></canvas>
+            <div class="game-overlay" id="gameOverlay">
+              <strong id="overlayTitle">準備開始</strong>
+              <span id="overlayText">按開始進入遊戲</span>
+            </div>
           </div>
 
-          <div class="feedback" id="feedback" data-tone="neutral">
-            <span aria-hidden="true">●</span>
-            <p id="feedbackText">選一個正確指令，幫角色充能前進。</p>
-          </div>
-        </section>
-
-        <section class="challenge-panel" aria-labelledby="challengeTitle">
-          <span class="small-label" id="conceptLabel">Scratch</span>
-          <h2 id="challengeTitle">準備題目中</h2>
-          <p id="challengePrompt"></p>
-
-          <div class="prompt-window" id="promptWindow"></div>
-
-          <div class="answers" id="answers"></div>
-
-          <div class="challenge-actions">
-            <button class="primary-button" id="nextButton" type="button" hidden>下一題</button>
+          <div class="mobile-controls" aria-label="手機方向控制">
+            <span></span>
+            <button type="button" data-direction="up" aria-label="向上">↑</button>
+            <span></span>
+            <button type="button" data-direction="left" aria-label="向左">←</button>
+            <button type="button" data-direction="down" aria-label="向下">↓</button>
+            <button type="button" data-direction="right" aria-label="向右">→</button>
           </div>
         </section>
+
+        <aside class="info-panel" aria-label="程式語法狀態">
+          <section class="token-panel">
+            <span class="small-label">目前能量</span>
+            <div class="token-chip" id="currentToken">int</div>
+            <p id="currentTip">int 可以存整數，例如分數、長度或次數。</p>
+          </section>
+
+          <section class="code-panel">
+            <span class="small-label">蛇的邏輯</span>
+            <pre><code>while (playing) {
+    moveSnake();
+    if (eatToken) score++;
+}</code></pre>
+          </section>
+
+          <section class="log-panel">
+            <span class="small-label">吃到的語法</span>
+            <ol id="tokenLog"></ol>
+          </section>
+        </aside>
       </section>
     </main>
 
     <dialog class="result-dialog" id="resultDialog">
-      <div class="result-badge" id="resultBadge">A</div>
-      <p class="result-kicker">接力完成</p>
-      <h2 id="resultTitle">程式能量隊長</h2>
-      <p class="result-score">總分 <strong id="finalScore">100</strong> / 100</p>
+      <div class="result-badge" id="resultBadge">0</div>
+      <p class="result-kicker">Game Over</p>
+      <h2 id="resultTitle">程式蛇停下來了</h2>
+      <p class="result-score">總分 <strong id="finalScore">0</strong></p>
       <p id="resultMessage"></p>
-      <ol class="review-list" id="reviewList"></ol>
       <div class="result-actions">
         <button class="primary-button" id="playAgainButton" type="button">再玩一次</button>
         <a class="nav-button" href="../">回總複習</a>
